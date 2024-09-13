@@ -4,20 +4,17 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Paiement>
- */
 class PaiementFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = \App\Models\Paiement::class;
+
+    public function definition()
     {
         return [
-            //
+            'montant' => $this->faker->numberBetween(10000, 50000),
+            'type' => $this->faker->randomElement(['carte', 'paypal', 'virement', 'autre']),
+            'commission' => $this->faker->numberBetween(500, 5000),
+            'reservation_id' => \App\Models\Reservation::factory(),
         ];
     }
 }

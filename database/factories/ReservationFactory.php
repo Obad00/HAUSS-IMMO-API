@@ -4,20 +4,16 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Reservation>
- */
 class ReservationFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = \App\Models\Reservation::class;
+
+    public function definition()
     {
         return [
-            //
+            'statut' => $this->faker->randomElement(['acceptee', 'déclinee']),
+            'locataire_id' => \App\Models\Locataire::factory(),
+            'logement_id' => \App\Models\Logement::factory(),
         ];
     }
 }

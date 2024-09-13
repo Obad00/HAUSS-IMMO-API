@@ -4,20 +4,15 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Support>
- */
 class SupportFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = \App\Models\Support::class;
+
+    public function definition()
     {
         return [
-            //
+            'typeDemande' => $this->faker->randomElement(['technique', 'administratif', 'autre']),
+            'user_id' => \App\Models\User::factory(), // Associe un utilisateur à la demande de support
         ];
     }
 }
