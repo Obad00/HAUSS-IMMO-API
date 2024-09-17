@@ -11,6 +11,7 @@ class Reservation extends Model
 {
     use HasFactory;
 
+    
     // Relation avec le logement
     public function logement(): BelongsTo
     {
