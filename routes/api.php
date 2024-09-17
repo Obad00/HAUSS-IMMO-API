@@ -14,12 +14,7 @@ Route::get('logements/public', [LogementController::class, 'publicIndex']);
 // Route pour afficher les détails d'un logement spécifique sans connexion
 Route::get('logements/public/{id}', [LogementController::class, 'publicShow']);
 
-// Route pour créer une réservation
-Route::post('reservations', [ReservationController::class, 'store'])->middleware('auth:api');
-
-// Route pour mettre à jour une réservation (accepter ou refuser)
-Route::put('reservations/{id}', [ReservationController::class, 'update'])->middleware('auth:api');
-
+Route::apiResource('reservations', ReservationController::class);
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('logements', LogementController::class);

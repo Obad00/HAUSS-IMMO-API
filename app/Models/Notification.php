@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Notification extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['sujet', 'message', 'user_id'];
     public function User(): BelongsTo
     {
         return $this->belongsTo(User::class);
