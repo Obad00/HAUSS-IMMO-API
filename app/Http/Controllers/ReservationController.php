@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReservationCreatedMail;
 use App\Mail\ReservationStatusUpdatedMail;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ReservationController extends Controller
 {
@@ -18,8 +19,36 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        //
+        // Récupérer l'utilisateur authentifié
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié'], 401);
+        }
+
+        // Vérifier le rôle de l'utilisateur
+        if ($user->hasRole('locataire')) {
+            // Locataire : afficher toutes les réservations faites par l'utilisateur
+            $reservations = Reservation::where('locataire_id', $user->id)->get();
+        } elseif ($user->hasRole('proprietaire')) {
+            // Propriétaire : afficher toutes les réservations à traiter pour les logements du propriétaire
+            $logementsIds = $user->logements()->pluck('id'); // Assurez-vous que 'logements' est une relation valide
+
+            if ($logementsIds->isEmpty()) {
+                return response()->json(['message' => 'Aucun logement trouvé pour le propriétaire'], 404);
+            }
+
+            $reservations = Reservation::whereIn('logement_id', $logementsIds)
+                                        ->where('statut', 'en attente')
+                                        ->get();
+        } else {
+            // Autres rôles : retournez une erreur ou aucune réservation
+            return response()->json(['message' => 'Accès non autorisé'], 403);
+        }
+
+        return response()->json($reservations);
     }
+
 
     /**
      * Show the form for creating a new resource.
