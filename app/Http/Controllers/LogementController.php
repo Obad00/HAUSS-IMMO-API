@@ -12,7 +12,9 @@ class LogementController extends Controller
      */
     public function index()
     {
-        //
+        // Méthode pour afficher tous les logements
+        $logements = Logement::all();
+        return response()->json($logements);
     }
 
     /**
