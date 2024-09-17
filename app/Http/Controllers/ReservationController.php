@@ -42,7 +42,7 @@ class ReservationController extends Controller
        $reservation = Reservation::create([
            'logement_id' => $request->logement_id,
            'locataire_id' => Auth::id(),
-           'status' => 'en attente',
+           'statut' => 'en attente',
        ]);
 
        $locataire = Auth::user();

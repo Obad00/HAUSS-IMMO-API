@@ -11,7 +11,8 @@ class Reservation extends Model
 {
     use HasFactory;
 
-    
+    protected $guarded = [];
+
     // Relation avec le logement
     public function logement(): BelongsTo
     {
