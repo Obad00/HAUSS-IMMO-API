@@ -22,7 +22,17 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Créer un nouveau rôle
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $role = Role::create(['name' => $request->name]);
+        return response()->json($role, 201);
     }
 
     /**
@@ -30,7 +40,14 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Montrer un rôle spécifique
+        $role = Role::find($id);
+
+        if (!$role) {
+            return response()->json(['message' => 'Rôle non trouvé'], 404);
+        }
+
+        return response()->json($role, 200);
     }
 
     /**
@@ -38,7 +55,24 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Mettre à jour un rôle existant
+        $role = Role::find($id);
+
+        if (!$role) {
+            return response()->json(['message' => 'Rôle non trouvé'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $role->update(['name' => $request->name]);
+        return response()->json($role, 200);
+
     }
 
     /**
@@ -46,6 +80,14 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Supprimer un rôle
+        $role = Role::find($id);
+
+        if (!$role) {
+            return response()->json(['message' => 'Rôle non trouvé'], 404);
+        }
+
+        $role->delete();
+        return response()->json(['message' => 'Rôle supprimé'], 200);
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
+
 
 class PermissionController extends Controller
 {
@@ -11,7 +14,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+         // Liste toutes les permissions
+         return response()->json(Permission::all(), 200);
     }
 
     /**
@@ -19,7 +23,17 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Créer une nouvelle permission
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $permission = Permission::create(['name' => $request->name]);
+        return response()->json($permission, 201);
     }
 
     /**
@@ -27,7 +41,14 @@ class PermissionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        //Montrer une permission spécifique
+        $permission = Permission::find($id);
+
+        if (!$permission) {
+            return response()->json(['message' => 'Permission non trouvée'], 404);
+        }
+
+        return response()->json($permission, 200);
     }
 
     /**
@@ -35,7 +56,23 @@ class PermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // // Mettre à jour une permission existante
+        $permission = Permission::find($id);
+
+        if (!$permission) {
+            return response()->json(['message' => 'Permission non trouvée'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $permission->update(['name' => $request->name]);
+        return response()->json($permission, 200);
     }
 
     /**
@@ -43,6 +80,14 @@ class PermissionController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        //Supprimer une permission
+        $permission = Permission::find($id);
+
+        if (!$permission) {
+            return response()->json(['message' => 'Permission non trouvée'], 404);
+        }
+
+        $permission->delete();
+        return response()->json(['message' => 'Permission supprimée'], 200);
     }
 }
