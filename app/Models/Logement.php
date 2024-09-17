@@ -11,6 +11,8 @@ class Logement extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     // Relation avec le propriétaire
     public function proprietaire(): BelongsTo
     {

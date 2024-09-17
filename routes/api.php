@@ -7,9 +7,18 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LogementController;
 
+// Route pour afficher tous les logements sans connexion
+Route::get('logements/public', [LogementController::class, 'publicIndex']);
+
+// Route pour afficher les détails d'un logement spécifique sans connexion
+Route::get('logements/public/{id}', [LogementController::class, 'publicShow']);
+
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('logements', LogementController::class);
 });
+
+
+
 
 
 Route::post('register', [AuthController::class, 'register']);
