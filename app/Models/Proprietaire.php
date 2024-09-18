@@ -16,10 +16,7 @@ class Proprietaire extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function proprietaire()
-    {
-        return $this->hasOne(Proprietaire::class);
-    }
+    
 
     // Relation avec les logements
     public function logements(): HasMany

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('titre');
             $table->string('adresse');
             $table->enum('type', ['appartement', 'maison']);
+            $table->enum('statut', ['en vente', 'en location', 'deja vendu', 'deja loue'])->default('en vente');
             $table->string('image')->nullable();
             $table->string('ville');
             $table->string('region');

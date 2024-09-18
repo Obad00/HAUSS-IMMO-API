@@ -7,11 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreLogementRequest extends FormRequest
 {
     /**
-     * Détermine si l'utilisateur est autorisé à faire cette demande.
+     * Determine si l'utilisateur est autorisé à faire cette demande.
      */
     public function authorize()
     {
-        return true; 
+        return true;
     }
 
     /**
@@ -33,19 +33,20 @@ class StoreLogementRequest extends FormRequest
             'surface' => 'required|numeric',
             'description' => 'nullable|string',
             'prix' => 'required|numeric',
-            'categorie_id' => 'required|exists:categories,id'
+            'statut' => 'required|in:en vente,en location,deja vendu,deja loue',
+            'categorie_id' => 'required|exists:categories,id',
         ];
     }
 
     /**
-     * Obtenir les messages de validation personnalisés.
+     * Obtenir les messages de validation personnalises.
      */
     public function messages()
     {
         return [
             'titre.required' => 'Le titre est requis.',
             'adresse.required' => 'L\'adresse est requise.',
-            // Ajoutez ici d'autres messages personnalisés pour les validations
+            // Ajoutez ici d'autres messages personnalises pour les validations
         ];
     }
 }
