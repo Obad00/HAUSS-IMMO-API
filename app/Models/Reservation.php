@@ -22,7 +22,7 @@ class Reservation extends Model
     // Relation avec le locataire
     public function locataire(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'locataire_id');
+        return $this->belongsTo(Locataire::class);
     }
 
     // Relation avec les paiements

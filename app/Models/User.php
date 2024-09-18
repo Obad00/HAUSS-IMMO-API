@@ -78,8 +78,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function locataire()
     {
-        return $this->hasOne(Locataire::class);
+        return $this->hasOne(Locataire::class, 'user_id');
     }
+
 
     // Relation avec les commentaires
     public function commentaires(): HasMany
@@ -102,5 +103,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Logement::class, 'proprietaire_id');
     }
+
+        public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'locataire_id');
+    }
+
 
 }

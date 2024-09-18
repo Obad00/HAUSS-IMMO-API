@@ -16,6 +16,9 @@ return new class extends Migration
             $table->enum('statut', ['en attente', 'acceptee', 'declinee']);
             $table->foreignId('logement_id')->constrained('logements')->onDelete('cascade');
             $table->foreignId('locataire_id')->constrained('locataires')->onDelete('cascade');
+            $table->boolean('deleted_by_owner')->default(false);
+            $table->boolean('deleted_by_tenant')->default(false);
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
         });
     }

@@ -13,6 +13,13 @@ class Logement extends Model
 
     protected $guarded = [];
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    
     // Relation avec le propriétaire
     public function proprietaire(): BelongsTo
     {

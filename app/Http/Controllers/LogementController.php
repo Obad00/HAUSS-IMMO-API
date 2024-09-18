@@ -51,17 +51,26 @@ class LogementController extends Controller
     // Méthode pour créer un nouveau logement
     public function store(StoreLogementRequest $request)
     {
-        // Récupérer l'utilisateur authentifié
-        $user = JWTAuth::parseToken()->authenticate();
+        try {
+            // Récupérer l'utilisateur authentifié
+            $user = JWTAuth::parseToken()->authenticate();
 
-        // Créer un nouveau logement
-        $logement = Logement::create(array_merge($request->all(), ['proprietaire_id' => $user->id]));
+            // Créer un nouveau logement
+            $logement = Logement::create(array_merge($request->validated(), ['proprietaire_id' => $user->id]));
 
-        return response()->json([
-            'message' => 'Logement créé avec succès.',
-            'logement' => $logement
-        ], 201);
+            return response()->json([
+                'message' => 'Logement créé avec succès.',
+                'logement' => $logement
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erreur lors de la création du logement.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
     /**
      * Display the specified resource.
      */
