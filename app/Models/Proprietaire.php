@@ -10,6 +10,7 @@ class Proprietaire extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['user_id'];
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -19,7 +20,7 @@ class Proprietaire extends Model
     {
         return $this->hasOne(Proprietaire::class);
     }
-    
+
     // Relation avec les logements
     public function logements(): HasMany
     {
