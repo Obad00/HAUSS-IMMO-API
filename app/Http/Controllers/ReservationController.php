@@ -27,11 +27,11 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Utilisateur non authentifié'], 401);
         }
 
-        \Log::info('Utilisateur authentifié:', ['user' => $user]);
+        // \Log::info('Utilisateur authentifié:', ['user' => $user]);
 
         // Vérifier le rôle de l'utilisateur
         if ($user->hasRole('locataire')) {
-            \Log::info('Utilisateur est un locataire');
+            // \Log::info('Utilisateur est un locataire');
 
             // Locataire : récupérer le locataire lié à l'utilisateur
             $locataire = $user->locataire;
@@ -45,15 +45,15 @@ class ReservationController extends Controller
                                     ->where('deleted_by_tenant', false)
                                     ->get();
 
-            \Log::info('Réservations pour locataire:', ['reservations' => $reservations]);
+            // \Log::info('Réservations pour locataire:', ['reservations' => $reservations]);
 
         } elseif ($user->hasRole('proprietaire')) {
-            \Log::info('Utilisateur est un propriétaire');
+            // \Log::info('Utilisateur est un propriétaire');
 
             // Propriétaire : récupérer les identifiants des logements liés au propriétaire
             $logementsIds = $user->logements()->pluck('id');
 
-            \Log::info('Logements IDs pour propriétaire:', ['logements_ids' => $logementsIds]);
+            // \Log::info('Logements IDs pour propriétaire:', ['logements_ids' => $logementsIds]);
 
             if ($logementsIds->isEmpty()) {
                 return response()->json(['message' => 'Aucun logement trouvé pour le propriétaire'], 404);
@@ -64,7 +64,7 @@ class ReservationController extends Controller
                                     ->where('deleted_by_owner', false)
                                     ->get();
 
-            \Log::info('Réservations pour propriétaire:', ['reservations' => $reservations]);
+            // \Log::info('Réservations pour propriétaire:', ['reservations' => $reservations]);
 
         } else {
             // Autres rôles : retournez une erreur
@@ -220,46 +220,56 @@ class ReservationController extends Controller
         return response()->json(['message' => 'Réservation supprimée du tableau de bord du locataire.']);
     }
 
-    public function ownerRestore($id)
-{
-    $reservation = Reservation::findOrFail($id);
+        public function ownerRestore($id)
+    {
+        $reservation = Reservation::findOrFail($id);
 
-    // Vérifier que l'utilisateur est propriétaire
-    $user = JWTAuth::parseToken()->authenticate();
-    if (!$user->hasRole('proprietaire')) {
-        return response()->json(['message' => 'Accès non autorisé'], 403);
+        // Vérifier que l'utilisateur est propriétaire
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user->hasRole('proprietaire')) {
+            return response()->json(['message' => 'Accès non autorisé'], 403);
+        }
+
+        // Réinitialiser le statut de suppression par le propriétaire
+        $reservation->deleted_by_owner = false;
+        $reservation->save();
+
+        return response()->json(['message' => 'Réservation restaurée pour le propriétaire.']);
     }
 
-    // Réinitialiser le statut de suppression par le propriétaire
-    $reservation->deleted_by_owner = false;
-    $reservation->save();
+    public function tenantRestore($id)
+    {
+        $reservation = Reservation::findOrFail($id);
 
-    return response()->json(['message' => 'Réservation restaurée pour le propriétaire.']);
-}
+        // Vérifier que l'utilisateur est locataire
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user->hasRole('locataire')) {
+            return response()->json(['message' => 'Accès non autorisé'], 403);
+        }
 
-public function tenantRestore($id)
-{
-    $reservation = Reservation::findOrFail($id);
+        // Réinitialiser le statut de suppression par le locataire
+        $reservation->deleted_by_tenant = false;
+        $reservation->save();
 
-    // Vérifier que l'utilisateur est locataire
-    $user = JWTAuth::parseToken()->authenticate();
-    if (!$user->hasRole('locataire')) {
-        return response()->json(['message' => 'Accès non autorisé'], 403);
+        return response()->json(['message' => 'Réservation restaurée pour le locataire.']);
     }
-
-    // Réinitialiser le statut de suppression par le locataire
-    $reservation->deleted_by_tenant = false;
-    $reservation->save();
-
-    return response()->json(['message' => 'Réservation restaurée pour le locataire.']);
-}
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Reservation $reservation)
+        public function destroy($id)
     {
-        //
+        $reservation = Reservation::withTrashed()->find($id);
+
+        if (!$reservation || !$reservation->trashed()) {
+            return response()->json(['message' => 'Réservation non trouvée ou non archivée'], 404);
+        }
+
+        // Supprimer définitivement la réservation
+        $reservation->forceDelete();
+
+        return response()->json(['message' => 'Réservation supprimée définitivement.']);
     }
+
 }
