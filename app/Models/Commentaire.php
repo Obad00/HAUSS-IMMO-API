@@ -10,6 +10,9 @@ class Commentaire extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
+
     // Relation avec un utilisateur
     public function user(): BelongsTo
     {

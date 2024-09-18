@@ -14,6 +14,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable, HasRoles;
 
+    protected $guarded = [];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -62,6 +64,21 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    public function proprietaire()
+    {
+        return $this->hasOne(Proprietaire::class);
+    }
+
+    public function locataire()
+    {
+        return $this->hasOne(Locataire::class);
     }
 
     // Relation avec les commentaires

@@ -10,6 +10,9 @@ class Support extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
+
     // Relation avec les utilisateurs
     public function users(): BelongsToMany
     {

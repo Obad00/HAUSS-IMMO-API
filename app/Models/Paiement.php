@@ -10,6 +10,8 @@ class Paiement extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     // Relation avec la réservation
     public function reservation(): BelongsTo
     {

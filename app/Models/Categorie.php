@@ -10,6 +10,8 @@ class Categorie extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     // Relation avec les logements
     public function logements(): HasMany
     {
