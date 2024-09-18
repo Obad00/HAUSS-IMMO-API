@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\LogementController;
 use App\Http\Controllers\ReservationController;
 
@@ -15,11 +16,13 @@ Route::middleware('auth:api')->post('/users/{userId}/assign-role', [UsersControl
 
 // Route pour afficher tous les logements sans connexion
 Route::get('logements/public', [LogementController::class, 'publicIndex']);
-
 // Route pour afficher les détails d'un logement spécifique sans connexion
 Route::get('logements/public/{id}', [LogementController::class, 'publicShow']);
-
+//Route pour les réservations
 Route::apiResource('reservations', ReservationController::class);
+//Route pour les categories
+Route::apiResource('categories', CategorieController::class);
+
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('logements', LogementController::class);
@@ -52,18 +55,4 @@ Route::get('/permissions/{id}', [PermissionController::class, 'show']);
 Route::put('/permissions/{id}', [PermissionController::class, 'update']);
 Route::delete('/permissions/{id}', [PermissionController::class, 'destroy']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    // Routes pour les rôles
-    // Route::get('/roles', [RoleController::class, 'index']);
-    // Route::post('/roles', [RoleController::class, 'store']);
-    // Route::get('/roles/{id}', [RoleController::class, 'show']);
-    // Route::put('/roles/{id}', [RoleController::class, 'update']);
-    // Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
 
-    // // Routes pour les permissions
-    // Route::get('/permissions', [PermissionController::class, 'index']);
-    // Route::post('/permissions', [PermissionController::class, 'store']);
-    // Route::get('/permissions/{id}', [PermissionController::class, 'show']);
-    // Route::put('/permissions/{id}', [PermissionController::class, 'update']);
-    // Route::delete('/permissions/{id}', [PermissionController::class, 'destroy']);
-});
