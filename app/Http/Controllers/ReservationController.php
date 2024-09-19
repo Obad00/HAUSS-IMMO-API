@@ -195,30 +195,30 @@ class ReservationController extends Controller
     }
 
 
-    public function archiveByTenant(Request $request, $id)
-{
-    // Récupérer la réservation à archiver
-    $reservation = Reservation::findOrFail($id);
+        public function archiveByTenant(Request $request, $id)
+    {
+        // Récupérer la réservation à archiver
+        $reservation = Reservation::findOrFail($id);
 
-    // Récupérer l'utilisateur authentifié
-    $user = JWTAuth::parseToken()->authenticate();
+        // Récupérer l'utilisateur authentifié
+        $user = JWTAuth::parseToken()->authenticate();
 
-    // Vérifier que l'utilisateur est bien authentifié et qu'il est locataire
-    if (!$user || !$user->hasRole('locataire')) {
-        return response()->json(['message' => 'Accès non autorisé. L\'utilisateur n\'est pas un locataire.'], 403);
+        // Vérifier que l'utilisateur est bien authentifié et qu'il est locataire
+        if (!$user || !$user->hasRole('locataire')) {
+            return response()->json(['message' => 'Accès non autorisé. L\'utilisateur n\'est pas un locataire.'], 403);
+        }
+
+        // Vérifier que l'utilisateur est bien le locataire de cette réservation
+        // if ($reservation->logement->locataire_id != $user->id) {
+        //     return response()->json(['message' => 'Accès non autorisé pour ce locataire'], 403);
+        // }
+
+        // Archiver la réservation pour le locataire
+        $reservation->archived_by_tenant_at = now();
+        $reservation->save();
+
+        return response()->json(['message' => 'Réservation archivée avec succès par le locataire.']);
     }
-
-    // Vérifier que l'utilisateur est bien le locataire de cette réservation
-    if ($reservation->locataire_id != $user->id) {
-        return response()->json(['message' => 'Accès non autorisé pour ce locataire'], 403);
-    }
-
-    // Archiver la réservation pour le locataire
-    $reservation->archived_by_tenant_at = now();
-    $reservation->save();
-
-    return response()->json(['message' => 'Réservation archivée avec succès par le locataire.']);
-}
 
 
     public function ownerRestore($id)
