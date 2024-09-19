@@ -18,7 +18,8 @@ return new class extends Migration
             $table->foreignId('locataire_id')->constrained('locataires')->onDelete('cascade');
             $table->boolean('deleted_by_owner')->default(false);
             $table->boolean('deleted_by_tenant')->default(false);
-            $table->timestamp('archived_at')->nullable();
+            $table->timestamp('archived_by_tenant_at')->nullable();
+            $table->timestamp('archived_by_owner_at')->nullable();
             $table->timestamps();
         });
     }

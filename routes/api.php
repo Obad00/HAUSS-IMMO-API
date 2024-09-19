@@ -36,18 +36,21 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->post('logout', [AuthController::class, 'logout']);
 
-
-Route::post('/reservations/{id}/archive', [ReservationController::class, 'archive'])
-     ->middleware('auth:api'); // Assure-toi que l'utilisateur est authentifié
-
-Route::post('/reservations/{id}/tenant-delete', [ReservationController::class, 'tenantDelete'])
-     ->middleware('auth:api'); // Assure-toi que l'utilisateur est authentifié
+Route::post('/reservations/{id}/archive/owner', [ReservationController::class, 'archiveByOwner']);
+Route::post('/reservations/{id}/archive/tenant', [ReservationController::class, 'archiveByTenant']);
 
 Route::post('/reservations/{id}/owner-restore', [ReservationController::class, 'ownerRestore'])
      ->middleware('auth:api'); // Assure-toi que l'utilisateur est authentifié
 
 Route::post('/reservations/{id}/tenant-restore', [ReservationController::class, 'tenantRestore'])
      ->middleware('auth:api'); // Assure-toi que l'utilisateur est authentifié
+
+     
+
+Route::post('/reservations/{id}/tenant-delete', [ReservationController::class, 'tenantDelete'])
+     ->middleware('auth:api'); // Assure-toi que l'utilisateur est authentifié
+
+
 
 Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])
      ->middleware('auth:api'); // Assure-toi que l'utilisateur est authentifié
